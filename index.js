@@ -1,6 +1,6 @@
 const express = require('express')
 var morgan = require('morgan')
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 const app = express()
 app.use(express.json())
@@ -37,6 +37,8 @@ let persons = [
       "number": "39-23-6423122"
     }
 ]
+
+app.use(express.static('dist'))
 
 app.get('/api/info', (request, response) => {
     const date = new Date();
