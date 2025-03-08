@@ -1,8 +1,15 @@
 const express = require('express')
+var morgan = require('morgan')
 const PORT = 3001
 
 const app = express()
 app.use(express.json())
+
+morgan.token('request-body', req => JSON.stringify(req.body))
+app.use((req, res, next) => {
+    if(req.method === 'POST') morgan(':method :url :status :res[content-length] - :response-time ms :request-body')(req, res, next)
+    else morgan('tiny')(req, res, next)
+})
 
 const generateRandomId = () => {
     return Math.floor(Math.random() * 1000000000000).toString()
