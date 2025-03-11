@@ -11,8 +11,8 @@ const url = `mongodb+srv://gonzalohralbornoz:${password}@cluster0.vqa2x.mongodb.
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
-const personSchema = new mongoose.Schema()
-const Person = mongoose.model('Person', { name: String , number: String });
+const personSchema = new mongoose.Schema({ name: String , number: String })
+const Person = mongoose.model('Person', personSchema);
 
 let promise;
 if(process.argv.length === 5){
