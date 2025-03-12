@@ -1,7 +1,7 @@
 {
-  "name": "fullstackopencourse_backend",
+  "name": "fullstackopencourse_backend_part3_phonebook",
   "version": "1.0.0",
-  "description": "\"# fullstackopencourse_backend\"",
+  "description": "\"# fullstackopencourse_backend_part3_phonebook\"",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
