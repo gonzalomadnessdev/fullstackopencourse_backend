@@ -103,3 +103,43 @@ describe('favorite blog', () => {
     assert.deepStrictEqual(favBlog, blogs[2])
   })
 })
+
+describe('author with most blogs', () => {
+  test('of an empty list is null', () => {
+    //arrange
+    const blogs = []
+    //act
+    const result = listHelper.mostBlogs(blogs)
+    //assert
+    assert.strictEqual(result, null)
+  })
+
+  test('of a bigger list is calculated right', () => {
+    //arrange
+    const blogs = _blogs.map((b) => {return { ...b }})
+    //act
+    const result = listHelper.mostBlogs(blogs)
+    //assert
+    assert.strictEqual(result.author, 'Robert C. Martin')
+  })
+})
+
+describe('author with most likes', () => {
+  test('of an empty list is null', () => {
+    //arrange
+    const blogs = []
+    //act
+    const result = listHelper.mostLikes(blogs)
+    //assert
+    assert.strictEqual(result, null)
+  })
+
+  test('of a bigger list is calculated right', () => {
+    //arrange
+    const blogs = _blogs.map((b) => {return { ...b }})
+    //act
+    const result = listHelper.mostLikes(blogs)
+    //assert
+    assert.strictEqual(result.author, 'Edsger W. Dijkstra')
+  })
+})
