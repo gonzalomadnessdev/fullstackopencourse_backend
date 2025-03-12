@@ -1,0 +1,28 @@
+{
+  "name": "fullstackopencourse_backend",
+  "version": "1.0.0",
+  "description": "\"# fullstackopencourse_backend\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch --inspect index.js",
+    "build:ui": "(if exist dist rmdir dist /s /q) && cd ../../fullstackopencourse/part2/phonebook && npm run build && xcopy dist ..\\..\\..\\fullstackopencourse_backend\\part3_phonebook\\dist /s /e /i",
+    "deploy": "npm run build:ui && git checkout master && git add . && git commit -m deploy && git push",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@stylistic/eslint-plugin-js": "^4.2.0",
+    "eslint": "^9.22.0",
+    "globals": "^16.0.0"
+  }
+}
