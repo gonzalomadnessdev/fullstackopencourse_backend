@@ -29,6 +29,13 @@ test('blogs are a list of json with one element (test database)', async () => {
   assert.strictEqual(response.body.length, 1)
 })
 
+test('blogs use id as a key instead _id', async () => {
+  const response = await api.get('/api/blogs')
+    .expect(200)
+
+  assert(Object.keys(response.body[0]).includes('id'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
