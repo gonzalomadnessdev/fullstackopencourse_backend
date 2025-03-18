@@ -11,7 +11,9 @@ db.connect()
 app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
-app.use(middleware.requestLogger)
+if(process.env.NODE_ENV !== 'test'){
+  app.use(middleware.requestLogger)
+}
 
 //routes
 app.use('/api/health', healthcheckRouter)
