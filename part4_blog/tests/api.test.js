@@ -56,6 +56,20 @@ test('blogs are successfully created with post method', async () => {
   assert.strictEqual(getBlogsResponse.body.length - blogs.length, 1)
 })
 
+test('blog\'s likes are defaulted to zero when are missing from request when created', async () => {
+  const newBlog = {
+    title : 'Poison Was the Cure',
+    author : 'Dave Mustaine',
+    url : 'https://en.wikipedia.org/wiki/Rust_in_Peace',
+  }
+
+  const createBlogResponse = await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  assert.strictEqual(createBlogResponse.body.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
