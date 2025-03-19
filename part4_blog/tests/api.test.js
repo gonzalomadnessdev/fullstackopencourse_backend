@@ -70,6 +70,30 @@ test('blog\'s likes are defaulted to zero when are missing from request when cre
   assert.strictEqual(createBlogResponse.body.likes, 0)
 })
 
+test('title is required when a blog is created, if missing bad request is returned', async () => {
+  const newBlog = {
+    author : 'David Ellefson',
+    url : 'https://en.wikipedia.org/wiki/Rust_in_Peace',
+    likes : 0
+  }
+
+  await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('url is required when a blog is created, if missing bad request is returned', async () => {
+  const newBlog = {
+    title : 'Hangar 18',
+    author : 'Nick Menza',
+    likes : 0
+  }
+
+  await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })

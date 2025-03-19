@@ -8,12 +8,18 @@ router.get('/', async (request, response) => {
 
 router.post('/', async (request, response) => {
   let _blog = { ...request.body }
+
+  if(!_blog.title || !_blog.url) {
+    return response.sendStatus(400)
+  }
+
   _blog.likes ??= 0
+  _blog.author ??= null //author defaulted to null
 
   const blog = new Blog(_blog)
 
   const createdBlog = await blog.save()
-  response.status(201).json(createdBlog)
+  return response.status(201).json(createdBlog)
 })
 
 module.exports = router
