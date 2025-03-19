@@ -1,5 +1,5 @@
 const { test, after, beforeEach } = require('node:test')
-const assert = require('node:assert')
+const assert = require('node:assert/strict')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -34,6 +34,26 @@ test('blogs use id as a key instead _id', async () => {
     .expect(200)
 
   assert(Object.keys(response.body[0]).includes('id'))
+})
+
+test('blogs are successfully created with post method', async () => {
+  const newBlog = {
+    title : 'Appetite for Destruction',
+    author : 'Saul Hudson',
+    url : 'https://es.wikipedia.org/wiki/Guns_N%27_Roses',
+    likes : 1
+  }
+
+  const createBlogResponse = await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  assert.partialDeepStrictEqual(createBlogResponse.body, newBlog)
+
+  const getBlogsResponse = await api.get('/api/blogs')
+    .expect(200)
+
+  assert.strictEqual(getBlogsResponse.body.length - blogs.length, 1)
 })
 
 after(async () => {
