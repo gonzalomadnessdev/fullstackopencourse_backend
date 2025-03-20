@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+require('express-async-errors')
 const db = require('./database/mongodb')
 const middleware = require('./utils/middleware')
 const healthcheckRouter = require('./controllers/healthcheck')
