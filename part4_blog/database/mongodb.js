@@ -3,7 +3,7 @@ const logger = require('../utils/logger')
 const config = require('../utils/config')
 
 const connect = () => {
-  if (mongoose.connection.readyState === 0){
+  if (mongoose.connection.readyState === 0) {
     mongoose.set('strictQuery', false)
     mongoose.connect(config.MONGODB_URI)
       .then(() => {
@@ -15,7 +15,7 @@ const connect = () => {
   }
 }
 
-const createModel = (name, schema) => {
+const createModel = (name, schema, hiddenProperties = []) => {
   const _schema = new mongoose.Schema(schema)
 
   _schema.set('toJSON', {
@@ -23,6 +23,9 @@ const createModel = (name, schema) => {
       returnedObject.id = returnedObject._id.toString()
       delete returnedObject._id
       delete returnedObject.__v
+      if(hiddenProperties !== null){
+        hiddenProperties.forEach(key => delete returnedObject[key])
+      }
     }
   })
 

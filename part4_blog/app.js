@@ -5,6 +5,7 @@ const db = require('./database/mongodb')
 const middleware = require('./utils/middleware')
 const healthcheckRouter = require('./controllers/healthcheck')
 const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
 const app = express()
 
 db.connect()
@@ -19,6 +20,7 @@ if(process.env.NODE_ENV !== 'test'){
 //routes
 app.use('/api/health', healthcheckRouter)
 app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
 //endroutes
 
 app.use(middleware.unknownEndpoint)
