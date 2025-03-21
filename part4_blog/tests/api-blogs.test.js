@@ -6,7 +6,6 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const db = require('../database/mongodb')
-const blog = require('../models/blog')
 
 const blogs = [
   { 'title': 'A New Level',
@@ -106,7 +105,7 @@ describe('when a blog is deleted...', () => {
 
     await api.delete(`/api/blogs/${blogId}`).expect(204)
 
-    const found = await blog.findById(blogId)
+    const found = await Blog.findById(blogId)
     assert(!found)
 
   })

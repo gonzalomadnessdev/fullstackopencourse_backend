@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const ApiHttpException = require('../exceptions/ApiHttpException')
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 
@@ -10,8 +11,11 @@ router.get('/', async (request, response) => {
 router.post('/', async (request, response) => {
   let { name, username, password } = { ...request.body }
 
-  if(!(name && username && password)) {
-    return response.sendStatus(400)
+  if(!password) {
+    throw new ApiHttpException('password id required', 400)
+  }
+  if(password.length < 3) {
+    throw new ApiHttpException('password must be a least 3 characters long', 400)
   }
 
   const saltRounds = 10
@@ -20,7 +24,7 @@ router.post('/', async (request, response) => {
   const user = new User({
     username,
     name,
-    passwordHash,
+    password : passwordHash,
   })
 
   const createdUser = await user.save()
