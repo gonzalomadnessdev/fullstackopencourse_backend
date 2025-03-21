@@ -1,4 +1,5 @@
 const db = require('../database/mongodb')
+const mongoose = require('mongoose')
 
 module.exports = db.createModel('User', {
   username: {
@@ -8,7 +9,13 @@ module.exports = db.createModel('User', {
     minLength: 3,
   },
   password: String,
-  name: String
+  name: String,
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+  ],
 },
 ['password']
 )

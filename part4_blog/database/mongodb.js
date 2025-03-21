@@ -5,6 +5,7 @@ const config = require('../utils/config')
 const connect = () => {
   if (mongoose.connection.readyState === 0) {
     mongoose.set('strictQuery', false)
+    mongoose.set('strictPopulate', false)
     mongoose.connect(config.MONGODB_URI)
       .then(() => {
         logger.info('connected to MongoDB')

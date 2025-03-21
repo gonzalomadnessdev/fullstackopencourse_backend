@@ -4,12 +4,12 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 
 router.get('/', async (request, response) => {
-  const blogs = await User.find({})
+  const blogs = await User.find({}).populate({ path: 'blogs', select: 'title author url' })
   return response.json(blogs)
 })
 
 router.post('/', async (request, response) => {
-  let { name, username, password } = { ...request.body }
+  let { name, username, password } = request.body
 
   if(!password) {
     throw new ApiHttpException('password id required', 400)
@@ -25,6 +25,7 @@ router.post('/', async (request, response) => {
     username,
     name,
     password : passwordHash,
+    blogs : []
   })
 
   const createdUser = await user.save()
