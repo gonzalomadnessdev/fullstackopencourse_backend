@@ -2,7 +2,6 @@ const logger = require('./logger')
 const morgan = require('morgan')
 const jwt = require('jsonwebtoken')
 const config = require('./config')
-const { getTokenFromRequest } = require('./auth')
 
 morgan.token('request-body', req => JSON.stringify(req.body))
 
@@ -33,11 +32,20 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-const authenticationMiddleware = (req, res, next) => {
-  const token = getTokenFromRequest(req)
-  if(token === null) return res.status(401).json({ error: 'Access denied. No token provided.' })
+const tokenExtractor = (req, res, next) => {
+  const authorization = req.get('authorization')
+  let token = null
+  if (authorization && authorization.startsWith('Bearer ')) {
+    token = authorization.replace('Bearer ', '')
+  }
+  req.token = token
+  next()
+}
 
-  const decodedToken = jwt.verify(token, config.JWT_SECRET)
+const authenticationHandler = (req, res, next) => {
+  if(req.token === null) return res.status(401).json({ error: 'Access denied. No token provided.' })
+
+  const decodedToken = jwt.verify(req.token, config.JWT_SECRET)
   if (!decodedToken.id) {
     return res.status(401).json({ error: 'token invalid' })
   }
@@ -50,5 +58,6 @@ module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  authenticationMiddleware
+  authenticationHandler,
+  tokenExtractor
 }

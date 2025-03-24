@@ -1,14 +1,14 @@
 const router = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { authenticationMiddleware } = require('../utils/middleware')
+const middleware = require('../utils/middleware')
 
 router.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate({ path: 'user', select: 'username name' })
   return response.json(blogs)
 })
 
-router.post('/', authenticationMiddleware, async (request, response) => {
+router.post('/', middleware.authenticationHandler, async (request, response) => {
   let { title, url, likes, author } = request.body
 
   if(!(title && url)) {
@@ -29,14 +29,14 @@ router.post('/', authenticationMiddleware, async (request, response) => {
   return response.status(201).json(createdBlog)
 })
 
-router.delete('/:id', authenticationMiddleware , async (request, response) => {
+router.delete('/:id', middleware.authenticationHandler , async (request, response) => {
   const id = request.params.id
 
   await Blog.findByIdAndDelete(id)
   return response.status(204).end()
 })
 
-router.put('/:id', authenticationMiddleware, async (request, response) => {
+router.put('/:id', middleware.authenticationHandler, async (request, response) => {
   const id = request.params.id
   const blog = await Blog.findById(id)
 

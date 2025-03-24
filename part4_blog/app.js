@@ -18,6 +18,8 @@ if(process.env.NODE_ENV !== 'test'){
   app.use(middleware.requestLogger)
 }
 
+app.use(middleware.tokenExtractor)
+
 //routes
 app.use('/api/health', healthcheckRouter)
 app.use('/api/blogs', blogsRouter)
