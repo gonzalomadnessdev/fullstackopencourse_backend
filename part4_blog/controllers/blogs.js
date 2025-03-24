@@ -19,6 +19,7 @@ router.post('/', middleware.authenticationHandler, async (request, response) => 
   author ??= null
 
   const user = await User.findById(request.decodedToken.id)
+  if(user === null) return response.status(400).json({ error : 'user not found' })
 
   const blog = new Blog({ title, url, likes, author, user : user.id })
   const createdBlog = await blog.save()
@@ -31,6 +32,12 @@ router.post('/', middleware.authenticationHandler, async (request, response) => 
 
 router.delete('/:id', middleware.authenticationHandler , async (request, response) => {
   const id = request.params.id
+
+  const blog = await Blog.findById(id)
+  if(blog === null) return response.status(400).json({ error : 'blog not found' })
+
+  const userId = blog.user.toString()
+  if(userId !== request.decodedToken.id) return response.status(403).json({ error : 'cannot perform deleting in other owner\'s blogs' })
 
   await Blog.findByIdAndDelete(id)
   return response.status(204).end()
