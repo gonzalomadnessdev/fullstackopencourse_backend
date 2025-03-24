@@ -42,14 +42,15 @@ const tokenExtractor = (req, res, next) => {
   next()
 }
 
-const authenticationHandler = (req, res, next) => {
+const userExtractor = (req, res, next) => {
   if(req.token === null) return res.status(401).json({ error: 'Access denied. No token provided.' })
 
-  const decodedToken = jwt.verify(req.token, config.JWT_SECRET)
-  if (!decodedToken.id) {
+  const { username, id } = jwt.verify(req.token, config.JWT_SECRET)
+  if (!id) {
     return res.status(401).json({ error: 'token invalid' })
   }
-  req.decodedToken = decodedToken
+
+  req.user = { username, id }
   next()
 
 }
@@ -58,6 +59,6 @@ module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  authenticationHandler,
+  userExtractor,
   tokenExtractor
 }
