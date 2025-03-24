@@ -1,5 +1,8 @@
 const logger = require('./logger')
 const morgan = require('morgan')
+const jwt = require('jsonwebtoken')
+const config = require('./config')
+const { getTokenFromRequest } = require('./auth')
 
 morgan.token('request-body', req => JSON.stringify(req.body))
 
@@ -20,14 +23,32 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
     return response.status(400).json({ error: 'expected `username` to be unique' })
+  } else if (error.name ===  'JsonWebTokenError') {
+    return response.status(401).json({ error: 'token invalid' })
+  } else if (error.name === 'TokenExpiredError') {
+    return response.status(401).json({ error: 'token expired' })
   } else if (error.name === 'ApiHttpException'){
     return response.status(error.statusCode).json({ error: `${error.message}` })
   }
   next(error)
 }
 
+const authenticationMiddleware = (req, res, next) => {
+  const token = getTokenFromRequest(req)
+  if(token === null) return res.status(401).json({ error: 'Access denied. No token provided.' })
+
+  const decodedToken = jwt.verify(token, config.JWT_SECRET)
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: 'token invalid' })
+  }
+  req.decodedToken = decodedToken
+  next()
+
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  authenticationMiddleware
 }
