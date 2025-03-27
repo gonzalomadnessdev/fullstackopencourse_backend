@@ -26,7 +26,9 @@ router.post('/', async (request, response) => {
   user.blogs = [ ...user.blogs , createdBlog.id ]
   await user.save()
 
-  return response.status(201).json(createdBlog)
+  const populatedBlog = await Blog.findById(createdBlog.id).populate({ path: 'user', select: 'username name' })
+
+  return response.status(201).json(populatedBlog)
 })
 
 router.delete('/:id' , async (request, response) => {
@@ -54,7 +56,8 @@ router.put('/:id', async (request, response) => {
     }
   }
 
-  const updatedBlog = await blog.save()
+  await blog.save()
+  const updatedBlog = await Blog.findById(id).populate({ path: 'user', select: 'username name' })
 
   return response.json(updatedBlog)
 })
